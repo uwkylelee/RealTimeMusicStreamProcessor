@@ -22,9 +22,53 @@ and `PySpark` and the recommendation system is built using `PySpark` and `Spark 
 - Apache Kafka 3.0.0
 - Java 17
 
-## Data Generation
+## Run DB
 
-## Data Processing
+### Start DB Instance
+```shell
+docker-compose -f database/docker-compose.yml up -d --build
+```
+
+### Stop
+```shell
+docker-compose -f database/docker-compose.yml down
+```
+
+### Remove DB
+```shell
+docker rm musicDB
+```
+
+### Database Connection in Docker Container
+```shell
+psql -U pyspark -d music_db
+```
+
+## Run Kafka
+
+
+### Start Kafka Instance
+```shell
+docker-compose -f kafka/docker-compose.yml up -d --build
+```
+
+### Stop Kafka Instance
+```shell
+docker-compose -f kafka/docker-compose.yml down
+```
+
+
+## Run Spark
+
+### Start Spark Instance
+```shell
+docker-compose -f spark/docker-compose.yml up -d --build
+```
+
+### Stop Spark Instance
+```shell
+docker-compose -f spark/docker-compose.yml down
+```
 
 ## Recommendation System
 
