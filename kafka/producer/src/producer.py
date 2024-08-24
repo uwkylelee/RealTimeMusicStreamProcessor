@@ -21,7 +21,10 @@ class Producer:
         data: Dict[str, Any] = {
             "user_id": random.randint(1, 1000),
             "track_id": random.randint(1, 50000),
-            "timestamp": self.fake.date_time_this_month().isoformat()
+            "timestamp": self.fake.date_time_this_month().isoformat(),
+            "event_type": random.choices(["streaming", "like"],
+                                         weights=[0.9, 0.1],
+                                         k=1)[0]
         }
         return data
 
