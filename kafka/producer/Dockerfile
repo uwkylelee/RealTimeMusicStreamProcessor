@@ -5,11 +5,11 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Copy dependencies
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy Spark Streaming script
-COPY streaming.py db_writer.py .
+# Copy Producer script
+COPY src/ .
 
-# Command to run Spark job
-CMD ["python", "streaming.py"]
+# Command to run the producer
+CMD ["python3", "producer.py"]
