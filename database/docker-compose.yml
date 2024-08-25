@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  music-db:
+    build: ./database
+    container_name: musicDB
+    environment:
+      POSTGRES_USER: pyspark
+      POSTGRES_PASSWORD: pyspark1234
+      POSTGRES_DB: music_db
+    ports:
+      - "5432:5432"
+    networks:
+      - music_stream_network
+
+networks:
+  music_stream_network:
+    external: true
