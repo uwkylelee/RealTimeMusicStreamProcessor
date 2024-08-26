@@ -168,4 +168,4 @@ cython_debug/
 # Juptyer Notebook
 *.ipynb
 
- .idea/
+.idea/
