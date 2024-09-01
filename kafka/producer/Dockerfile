@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ .
 
 # Command to run the producer
-CMD ["python3", "producer.py"]
+CMD ["python3", "main.py"]

@@ -1,2 +1,4 @@
 kafka-python==2.0.2
 Faker==33.0.0
+sqlalchemy==1.4.25
+psycopg2-binary==2.9.7
