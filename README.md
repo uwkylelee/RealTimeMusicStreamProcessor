@@ -1,14 +1,16 @@
 # Real-time Music Streaming Data Processor & Music Recommendation System
 
+
 ## Table of Contents
 
 - [Introduction](#introduction)
 - [Development Requirements](#development-requirements)
-- [Helpful Commands](#helpful-commands)
 - [Data Generation](#data-generation)
 - [Data Processing](#data-processing)
 - [Recommendation System](#recommendation-system)
+- [Helpful Commands](#helpful-commands)
 - [References](#references)
+
 
 ## Introduction
 
@@ -21,12 +23,33 @@ high-throughput data pipelines. For processing and analyzing this data, **PySpar
 computing framework, while the recommendation system is implemented using **Spark MLlib**, enabling scalable and
 efficient machine learning on large datasets.
 
+
 ## Development Requirements
 
 - Docker
 - Docker Compose
 - Python 3.10
 
+
+## Data Generation
+
+The data generation component simulates live music stream data and sends it to Kafka topics. This is achieved through a
+Kafka producer that generates synthetic music stream data, mimicking real-world scenarios.
+
+
+## Data Processing
+
+Data processing is handled by Apache Spark, which consumes data from Kafka topics, processes it, and prepares it for the
+recommendation system. Spark's structured streaming capabilities enable efficient handling of real-time data streams.
+
+
+## Recommendation System
+
+The recommendation system analyzes the processed data to provide personalized music recommendations. It utilizes machine
+learning algorithms to understand user preferences and suggest relevant music tracks.
+
+
+## Helpful Commands
 
 <details>
 <summary>PSQL DB Commands</summary>
@@ -91,21 +114,6 @@ docker-compose -f spark/docker-compose.yml down
 
 </details>
 
-
-## Data Generation
-
-The data generation component simulates live music stream data and sends it to Kafka topics. This is achieved through a
-Kafka producer that generates synthetic music stream data, mimicking real-world scenarios.
-
-## Data Processing
-
-Data processing is handled by Apache Spark, which consumes data from Kafka topics, processes it, and prepares it for the
-recommendation system. Spark's structured streaming capabilities enable efficient handling of real-time data streams.
-
-## Recommendation System
-
-The recommendation system analyzes the processed data to provide personalized music recommendations. It utilizes machine
-learning algorithms to understand user preferences and suggest relevant music tracks.
 
 ## References
 
