@@ -35,7 +35,9 @@ services:
       - music_stream_network
 
   spark-streaming:
-    build: ./streaming
+    build:
+      context: ./streaming
+      dockerfile: ./streaming/Dockerfile
     container_name: spark-streaming
     depends_on:
       - spark-master
