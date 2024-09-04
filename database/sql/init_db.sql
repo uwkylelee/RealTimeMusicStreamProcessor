@@ -24,13 +24,16 @@ CREATE TABLE IF NOT EXISTS bulk_track_raw_data
 
 COPY bulk_track_raw_data FROM '/data/bulk_track_raw_data.csv' DELIMITER ',' CSV HEADER;
 
-
 CREATE TABLE IF NOT EXISTS users
 (
     user_id    INT PRIMARY KEY,
     user_name  TEXT,
-    user_email TEXT
+    gender     TEXT,
+    age        INT
 );
+
+COPY users FROM '/data/user_data.csv' DELIMITER ',' CSV HEADER;
+
 
 -- CREATE TABLE IF NOT EXISTS artists (
 --     artist_id INT PRIMARY KEY,
@@ -83,18 +86,20 @@ FROM bulk_track_raw_data AS btrd
          JOIN albums AS a
               ON btrd.album_name = a.album_name;
 
-CREATE TABLE IF NOT EXISTS track_stream_log
+CREATE TABLE IF NOT EXISTS track_stream_event_log
 (
     user_id           INT,
     track_id          INT,
+    event_timestamp   TIMESTAMP,
     created_timestamp TIMESTAMP,
     PRIMARY KEY (user_id, track_id)
 );
 
-CREATE TABLE IF NOT EXISTS track_like_log
+CREATE TABLE IF NOT EXISTS track_like_event_log
 (
     user_id           INT,
     track_id          INT,
+    event_timestamp   TIMESTAMP,
     created_timestamp TIMESTAMP,
     PRIMARY KEY (user_id, track_id)
 );
