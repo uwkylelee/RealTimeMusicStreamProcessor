@@ -5,9 +5,9 @@ from pyspark.sql.functions import col, from_json
 from pyspark.sql.types import (IntegerType, StringType, StructField, StructType,
                                TimestampType)
 
-from db_manager import PostgresDataManager
-from models.track_like_log import TrackLikeLog
-from models.track_stream_log import TrackStreamLog
+from database_helper.db_manager import PostgresDataManager
+from database_helper.models.track_like_event_log import TrackLikeEventLog
+from database_helper.models.track_stream_event_log import TrackStreamEventLog
 
 
 class StreamingPipeline:
@@ -20,8 +20,10 @@ class StreamingPipeline:
         """
         Initialize the streaming pipeline.
 
-        :param kafka_config: A dictionary containing Kafka connection parameters.
-        :param db_manager: An instance of PostgresDataManager for database operations.
+        :param kafka_config: A dictionary containing
+        Kafka connection parameters.
+        :param db_manager: An instance of PostgresDataManager
+        for database operations.
         """
         self.spark = SparkSession.builder.appName(
             "UnifiedStreamingPipeline").getOrCreate()
@@ -32,15 +34,15 @@ class StreamingPipeline:
         self.streaming_schema = StructType([
             StructField("user_id", IntegerType(), True),
             StructField("track_id", IntegerType(), True),
-            StructField("timestamp", TimestampType(), True),
-            StructField("event_type", StringType(), True),  # 'streaming'
+            StructField("event_timestamp", TimestampType(), True),
+            StructField("event_type", StringType(), True),
         ])
 
         self.like_schema = StructType([
             StructField("user_id", IntegerType(), True),
             StructField("track_id", IntegerType(), True),
-            StructField("timestamp", TimestampType(), True),
-            StructField("event_type", StringType(), True),  # 'like'
+            StructField("event_timestamp", TimestampType(), True),
+            StructField("event_type", StringType(), True),
         ])
 
     def process_stream(self, topic: str) -> None:
@@ -80,8 +82,9 @@ class StreamingPipeline:
         # Process each type of log
         streaming_df.writeStream.foreachBatch(
             self._process_streaming).outputMode("append").start()
-        like_df.writeStream.foreachBatch(self._process_like).outputMode(
-            "append").start()
+
+        like_df.writeStream.foreachBatch(
+            self._process_like).outputMode("append").start()
 
         # Await termination of streams
         self.spark.streams.awaitAnyTermination()
@@ -95,7 +98,7 @@ class StreamingPipeline:
         """
         records = batch_df.collect()
         data = [record.asDict() for record in records]
-        self.db_manager.insert(TrackStreamLog, data)
+        self.db_manager.insert(TrackStreamEventLog, data)
         print(
             f"Processed {len(data)} streaming records into `track_stream_log`.")
 
@@ -108,5 +111,5 @@ class StreamingPipeline:
         """
         records = batch_df.collect()
         data = [record.asDict() for record in records]
-        self.db_manager.insert(TrackLikeLog, data)
+        self.db_manager.insert(TrackLikeEventLog, data)
         print(f"Processed {len(data)} like records into `track_like_log`.")
