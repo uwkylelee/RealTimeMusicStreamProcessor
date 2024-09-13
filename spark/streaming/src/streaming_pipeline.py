@@ -25,8 +25,11 @@ class StreamingPipeline:
         :param db_manager: An instance of PostgresDataManager
         for database operations.
         """
-        self.spark = SparkSession.builder.appName(
-            "UnifiedStreamingPipeline").getOrCreate()
+        self.spark = SparkSession.builder \
+            .appName("UnifiedStreamingPipeline") \
+            .getOrCreate()
+        self.spark.conf.set("spark.sql.streaming.minBatchesToRetain", 10)
+        self.spark.conf.set("spark.streaming.kafka.maxOffsetsPerTrigger", 1000)
         self.kafka_config = kafka_config
         self.db_manager = db_manager
 
@@ -51,13 +54,13 @@ class StreamingPipeline:
 
         :param topic: Kafka topic name.
         """
-        kafka_df = (
-            self.spark.readStream.format("kafka")
+        kafka_df = self.spark \
+            .readStream.format("kafka") \
             .option("kafka.bootstrap.servers",
-                    self.kafka_config['bootstrap_servers'])
-            .option("subscribe", topic)
+                    self.kafka_config['bootstrap_servers']) \
+            .option("subscribe", topic) \
+            .option("kafka.group.id", "pipeline_group") \
             .load()
-        )
 
         # Parse Kafka data into structured data with dynamic schema
         parsed_df = kafka_df.selectExpr(
@@ -96,11 +99,14 @@ class StreamingPipeline:
         :param batch_df: DataFrame containing streaming logs.
         :param batch_id: Batch ID for the streaming data.
         """
-        records = batch_df.collect()
-        data = [record.asDict() for record in records]
-        self.db_manager.insert(TrackStreamEventLog, data)
-        print(
-            f"Processed {len(data)} streaming records into `track_stream_log`.")
+        try:
+            records = batch_df.collect()
+            data = [record.asDict() for record in records]
+            self.db_manager.insert(TrackStreamEventLog, data)
+            print(
+                f"Processed {len(data)} streaming records into `track_stream_log`.")
+        except Exception as e:
+            print(f"Error processing batch {batch_id}: {e}")
 
     def _process_like(self, batch_df, batch_id):
         """
@@ -109,7 +115,10 @@ class StreamingPipeline:
         :param batch_df: DataFrame containing like logs.
         :param batch_id: Batch ID for the like data.
         """
-        records = batch_df.collect()
-        data = [record.asDict() for record in records]
-        self.db_manager.insert(TrackLikeEventLog, data)
-        print(f"Processed {len(data)} like records into `track_like_log`.")
+        try:
+            records = batch_df.collect()
+            data = [record.asDict() for record in records]
+            self.db_manager.insert(TrackLikeEventLog, data)
+            print(f"Processed {len(data)} like records into `track_like_log`.")
+        except Exception as e:
+            print(f"Error processing batch {batch_id}: {e}")
