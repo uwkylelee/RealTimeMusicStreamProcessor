@@ -9,5 +9,5 @@ if __name__ == '__main__':
 
     data_generator = Producer(kafka_servers, topic)
 
-    # Run the data generator every 0.1 seconds
-    data_generator.run(interval=0.1)
+    # Run the data generator
+    data_generator.run(interval=0.01)

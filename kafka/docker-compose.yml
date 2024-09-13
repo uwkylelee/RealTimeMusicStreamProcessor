@@ -36,7 +36,6 @@ services:
   producer:
     build:
       context: ./producer
-      dockerfile: ./producer/Dockerfile
     container_name: producer
     depends_on:
       kafka:
