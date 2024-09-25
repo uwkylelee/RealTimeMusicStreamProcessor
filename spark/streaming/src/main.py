@@ -42,15 +42,3 @@ if __name__ == "__main__":
             print(f"Error running streaming pipeline: {e}")
         finally:
             db_manager.close()
-    # elif args.app == 'recommender':
-    #     # Create an instance of RealTimeRecommender
-    #     recommender = RealTimeRecommender(app_name='RealTimeRecommender')
-    #     try:
-    #         recommender.start(
-    #             kafka_bootstrap_servers=KAFKA_CONFIG['bootstrap_servers'],
-    #             topic=args.topic)
-    #     except Exception as e:
-    #         print(f"Error running recommender: {e}")
-    #     finally:
-    #         recommender.stop()
-    #         db_manager.close()
