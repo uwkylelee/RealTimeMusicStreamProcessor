@@ -37,7 +37,6 @@ services:
   spark-streaming:
     build:
       context: ./streaming
-      dockerfile: ./streaming/Dockerfile
     container_name: spark-streaming
     depends_on:
       - spark-master
