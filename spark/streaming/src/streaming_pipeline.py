@@ -104,7 +104,8 @@ class StreamingPipeline:
             data = [record.asDict() for record in records]
             self.db_manager.insert(TrackStreamEventLog, data)
             print(
-                f"Processed {len(data)} streaming records into `track_stream_log`.")
+                f"Processed {len(data)} "
+                f"streaming records into `track_stream_log`.")
         except Exception as e:
             print(f"Error processing batch {batch_id}: {e}")
 
