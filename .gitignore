@@ -169,3 +169,5 @@ cython_debug/
 *.ipynb
 
 .idea/
+
+*59dd66020a31.json
