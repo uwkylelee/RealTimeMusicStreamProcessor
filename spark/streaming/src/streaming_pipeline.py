@@ -2,8 +2,13 @@ from typing import Dict
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, from_json
-from pyspark.sql.types import (IntegerType, StringType, StructField, StructType,
-                               TimestampType)
+from pyspark.sql.types import (
+    IntegerType,
+    StringType,
+    StructField,
+    StructType,
+    TimestampType,
+)
 
 from database_helper.db_manager import PostgresDataManager
 from database_helper.models.track_like_event_log import TrackLikeEventLog
@@ -15,8 +20,7 @@ class StreamingPipeline:
     A class to process Kafka streaming data using Spark Structured Streaming.
     """
 
-    def __init__(self, kafka_config: Dict[str, str],
-                 db_manager: PostgresDataManager):
+    def __init__(self, kafka_config: Dict[str, str], db_manager: PostgresDataManager):
         """
         Initialize the streaming pipeline.
 
@@ -25,28 +29,32 @@ class StreamingPipeline:
         :param db_manager: An instance of PostgresDataManager
         for database operations.
         """
-        self.spark = SparkSession.builder \
-            .appName("UnifiedStreamingPipeline") \
-            .getOrCreate()
+        self.spark = SparkSession.builder.appName(
+            "UnifiedStreamingPipeline"
+        ).getOrCreate()
         self.spark.conf.set("spark.sql.streaming.minBatchesToRetain", 10)
         self.spark.conf.set("spark.streaming.kafka.maxOffsetsPerTrigger", 1000)
         self.kafka_config = kafka_config
         self.db_manager = db_manager
 
         # Define schemas for different log types
-        self.streaming_schema = StructType([
-            StructField("user_id", IntegerType(), True),
-            StructField("track_id", IntegerType(), True),
-            StructField("event_timestamp", TimestampType(), True),
-            StructField("event_type", StringType(), True),
-        ])
+        self.streaming_schema = StructType(
+            [
+                StructField("user_id", IntegerType(), True),
+                StructField("track_id", IntegerType(), True),
+                StructField("event_timestamp", TimestampType(), True),
+                StructField("event_type", StringType(), True),
+            ]
+        )
 
-        self.like_schema = StructType([
-            StructField("user_id", IntegerType(), True),
-            StructField("track_id", IntegerType(), True),
-            StructField("event_timestamp", TimestampType(), True),
-            StructField("event_type", StringType(), True),
-        ])
+        self.like_schema = StructType(
+            [
+                StructField("user_id", IntegerType(), True),
+                StructField("track_id", IntegerType(), True),
+                StructField("event_timestamp", TimestampType(), True),
+                StructField("event_type", StringType(), True),
+            ]
+        )
 
     def process_stream(self, topic: str) -> None:
         """
@@ -54,19 +62,17 @@ class StreamingPipeline:
 
         :param topic: Kafka topic name.
         """
-        kafka_df = self.spark \
-            .readStream.format("kafka") \
-            .option("kafka.bootstrap.servers",
-                    self.kafka_config['bootstrap_servers']) \
-            .option("subscribe", topic) \
-            .option("kafka.group.id", "pipeline_group") \
+        kafka_df = (
+            self.spark.readStream.format("kafka")
+            .option("kafka.bootstrap.servers", self.kafka_config["bootstrap_servers"])
+            .option("subscribe", topic)
+            .option("kafka.group.id", "pipeline_group")
             .load()
+        )
 
         # Parse Kafka data into structured data with dynamic schema
-        parsed_df = kafka_df.selectExpr(
-            "CAST(value AS STRING) as json_data").select(
-            from_json(col("json_data"), self.streaming_schema).alias(
-                "streaming_data"),
+        parsed_df = kafka_df.selectExpr("CAST(value AS STRING) as json_data").select(
+            from_json(col("json_data"), self.streaming_schema).alias("streaming_data"),
             from_json(col("json_data"), self.like_schema).alias("like_data"),
         )
 
@@ -83,11 +89,13 @@ class StreamingPipeline:
         )
 
         # Process each type of log
-        streaming_df.writeStream.foreachBatch(
-            self._process_streaming).outputMode("append").start()
+        streaming_df.writeStream.foreachBatch(self._process_streaming).outputMode(
+            "append"
+        ).start()
 
-        like_df.writeStream.foreachBatch(
-            self._process_like).outputMode("append").start()
+        like_df.writeStream.foreachBatch(self._process_like).outputMode(
+            "append"
+        ).start()
 
         # Await termination of streams
         self.spark.streams.awaitAnyTermination()
@@ -104,8 +112,8 @@ class StreamingPipeline:
             data = [record.asDict() for record in records]
             self.db_manager.insert(TrackStreamEventLog, data)
             print(
-                f"Processed {len(data)} "
-                f"streaming records into `track_stream_log`.")
+                f"Processed {len(data)} " f"streaming records into `track_stream_log`."
+            )
         except Exception as e:
             print(f"Error processing batch {batch_id}: {e}")
 

@@ -6,6 +6,7 @@ from datetime import datetime
 
 from database_helper.models import Base
 
+
 class PostgresDataManager:
     """
     A class for inserting and updating data in a PostgreSQL database using
@@ -49,8 +50,8 @@ class PostgresDataManager:
         self.session = self.get_new_session()
 
         try:
-            if 'created_timestamp' not in record:
-                record['created_timestamp'] = datetime.utcnow()
+            if "created_timestamp" not in record:
+                record["created_timestamp"] = datetime.utcnow()
             new_record = model(**record)
             self.session.add(new_record)
             self.session.commit()
@@ -74,13 +75,14 @@ class PostgresDataManager:
 
         try:
             for record in data:
-                if 'created_timestamp' not in record:
-                    record['created_timestamp'] = datetime.utcnow()
+                if "created_timestamp" not in record:
+                    record["created_timestamp"] = datetime.utcnow()
             self.session.bulk_insert_mappings(model, data)
             self.session.commit()
             print(
                 f"Successfully inserted {len(data)} "
-                f"records into {model.__tablename__}.")
+                f"records into {model.__tablename__}."
+            )
         except SQLAlchemyError as e:
             self.session.rollback()
             print(f"Error inserting records into {model.__tablename__}: {e}")
@@ -88,8 +90,9 @@ class PostgresDataManager:
         finally:
             self.session.close()
 
-    def update(self, model: Type[Base], conflict_column: str,
-               update_data: Dict[str, any]) -> None:
+    def update(
+        self, model: Type[Base], conflict_column: str, update_data: Dict[str, any]
+    ) -> None:
         """
         Update data in the specified table using the ORM model.
 
@@ -101,9 +104,11 @@ class PostgresDataManager:
         self.session = self.get_new_session()
 
         try:
-            record = self.session.query(model).filter(
-                getattr(model, conflict_column) == update_data[
-                    conflict_column]).one_or_none()
+            record = (
+                self.session.query(model)
+                .filter(getattr(model, conflict_column) == update_data[conflict_column])
+                .one_or_none()
+            )
             if record:
                 for key, value in update_data.items():
                     setattr(record, key, value)
@@ -111,11 +116,13 @@ class PostgresDataManager:
                 record.modified_timestamp = datetime.utcnow()
                 print(
                     f"Updated record {conflict_column} ="
-                    f" {update_data[conflict_column]}")
+                    f" {update_data[conflict_column]}"
+                )
             else:
                 print(
                     f"No record found with {conflict_column} ="
-                    f" {update_data[conflict_column]}")
+                    f" {update_data[conflict_column]}"
+                )
             self.session.commit()
         except SQLAlchemyError as e:
             self.session.rollback()
@@ -135,9 +142,12 @@ class PostgresDataManager:
 
         try:
             records = self.session.query(model).all()
-            return [record.__dict__ for record in records if
-                    "_sa_instance_state" in record.__dict__ and
-                    record.__dict__.pop("_sa_instance_state")]
+            return [
+                record.__dict__
+                for record in records
+                if "_sa_instance_state" in record.__dict__
+                and record.__dict__.pop("_sa_instance_state")
+            ]
         except SQLAlchemyError as e:
             print(f"Error fetching records from {model.__tablename__}: {e}")
             raise

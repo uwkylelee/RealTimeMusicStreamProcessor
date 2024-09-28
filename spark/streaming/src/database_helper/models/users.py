@@ -3,7 +3,7 @@ from database_helper.models.base import Base
 
 
 class Users(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     user_id = Column(Integer, primary_key=True)
     user_name = Column(Text, nullable=False)

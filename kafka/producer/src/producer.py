@@ -1,7 +1,5 @@
 import time
 import json
-import random
-from datetime import datetime
 from typing import List, Dict, Any
 from kafka import KafkaProducer
 
@@ -14,7 +12,7 @@ class Producer:
         self.topic = topic
         self.producer = KafkaProducer(
             bootstrap_servers=self.kafka_servers,
-            value_serializer=lambda v: json.dumps(v).encode('utf-8')
+            value_serializer=lambda v: json.dumps(v).encode("utf-8"),
         )
         self.fake_track_event_generator = FakeTrackEventGenerator()
 
