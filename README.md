@@ -3,10 +3,12 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
+    - [Data Generation](#data-generation)
+        - [Source of Track Data](#source-of-track-data)
+    - [Data Processing](#data-processing)
 - [Development Requirements](#development-requirements)
-- [Data Generation](#data-generation)
-- [Data Processing](#data-processing)
-- [GitHub Actions CI/CD](#github-actions-cicd)
+    - [Local Development](#local-development)
+    - [GCP Deployment](#gcp-deployment)
 - [Helpful Commands](#helpful-commands)
 - [References](#references)
 
@@ -27,21 +29,42 @@ process involves containerizing the components using **Docker** and deploying th
 deployment is automated using **GitHub Actions** CI/CD pipelines, which ensure that the latest changes are deployed
 automatically to the GKE cluster.
 
-## Development Requirements
-
-- Docker
-- Docker Compose
-- Python 3.10
-
-## Data Generation
+### Data Generation
 
 The data generation component simulates live music stream data and sends it to Kafka topics. This is achieved through a
 Kafka producer that generates synthetic music stream data, mimicking real-world scenarios.
 
-## Data Processing
+The source of track data is a Kaggle dataset containing information about various tracks, including their metadata and
+audio features. Link to the dataset is provided below.
+
+#### Source of Track Data
+
+[Kaggle Spotify Tracks Dataset](
+https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset
+)
+
+### Data Processing
 
 Data processing is handled by Apache Spark, which consumes data from Kafka topics, processes it, and prepares it for the
 recommendation system. Spark's structured streaming capabilities enable efficient handling of real-time data streams.
+
+## Development Requirements
+
+### Local Development
+
+For local development, the following components are required:
+
+- Docker
+- Docker Compose
+- Python 3.10
+- Miniconda or Anaconda
+
+### GCP Deployment
+
+For deployment to Google Cloud Platform, the following components are required:
+
+- Google Cloud SDK
+- GitHub Actions
 
 ## Helpful Commands
 
@@ -113,3 +136,5 @@ docker-compose -f spark/docker-compose.yml down
 - [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
 - [Apache Spark Structured Streaming](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html)
 - [Docker Documentation](https://docs.docker.com/)
+- [Google Cloud Platform Documentation](https://cloud.google.com/docs)
+- [Anaconda Documentation](https://docs.anaconda.com/)
