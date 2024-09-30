@@ -59,6 +59,25 @@ For local development, the following components are required:
 - Python 3.10
 - Miniconda or Anaconda
 
+#### Setup
+
+Install the required Python packages using the following command:
+
+```shell
+pip install -r requirements.txt
+```
+
+#### Linting before Commit
+
+All code changes should be linted using `black` before committing. To lint the code, run the following commands:
+
+```shell
+black .
+flake8 .
+```
+
+The output of above commands should be empty, indicating that the code is linted and ready for commit.
+
 ### GCP Deployment
 
 For deployment to Google Cloud Platform, the following components are required:
