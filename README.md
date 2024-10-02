@@ -21,7 +21,6 @@
 <div style="display: flex; gap: 10px; align-items: center;">
   <img src="https://img.shields.io/badge/Google_Cloud_Platform-4285F4?style=flat&logo=googlecloud&logoColor=white" height="20">
   <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=githubactions&logoColor=white" height="20">
-  <img src="https://img.shields.io/badge/Google_Kubernetes_Engine-326CE5?style=flat&logo=googlekubernetesengine&logoColor=white" height="20">
 </div>
 
 
