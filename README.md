@@ -1,4 +1,4 @@
-# Real-time Music Streaming Data Processor
+# Real-Time Music Streaming Data Processor
 
 ### 🚀 Tech Stack
 
