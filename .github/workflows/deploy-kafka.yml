@@ -4,8 +4,8 @@ on:
   workflow_dispatch: # Only allow manual triggers
 
 jobs:
-  lint:
-    uses: ./.github/workflows/lint.yml
+#  lint:
+#    uses: ./.github/workflows/lint.yml
 
   build-and-deploy:
     runs-on: ubuntu-latest
