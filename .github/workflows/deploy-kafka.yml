@@ -12,33 +12,37 @@ jobs:
     needs: lint
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    - name: Authenticate Docker with Artifact Registry
-      run: gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-    - name: Build Docker Image
-      working-directory: ./kafka/producer
-      run: |
-        docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/kafka-image:latest .
+      - name: Authenticate Docker with Artifact Registry
+        run: gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
 
-    - name: Push Docker Image to Artifact Registry
-      run: |
-        docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/kafka-image:latest
+      - name: Build Docker Image
+        working-directory: ./kafka/producer
+        run: |
+          docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/kafka-image:latest .
 
-    - name: Deploy to GKE
-      working-directory: ./kafka
-      env:
-        KUBECONFIG: /tmp/kubeconfig
-      run: |
-        gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.REGION }}
-        kubectl apply -f k8s/zookeeper-deployment.yaml
-        kubectl apply -f k8s/kafka-deployment.yaml
-        kubectl apply -f k8s/producer-deployment.yaml
+      - name: Push Docker Image to Artifact Registry
+        run: |
+          docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/kafka-image:latest
+
+      - name: Deploy to GKE
+        working-directory: ./kafka
+        env:
+          KUBECONFIG: /tmp/kubeconfig
+        run: |
+          gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.REGION }}
+          kubectl apply -f k8s/zookeeper-deployment.yaml
+          kubectl apply -f k8s/kafka-deployment.yaml
+          kubectl apply -f k8s/producer-deployment.yaml
