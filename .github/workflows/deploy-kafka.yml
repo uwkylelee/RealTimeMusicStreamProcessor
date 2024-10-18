@@ -4,8 +4,8 @@ on:
   workflow_dispatch: # Only allow manual triggers
 
 jobs:
-#  lint:
-#    uses: ./.github/workflows/lint.yml
+  #  lint:
+  #    uses: ./.github/workflows/lint.yml
 
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -31,11 +31,11 @@ jobs:
       - name: Build Docker Image
         working-directory: ./kafka/producer
         run: |
-          docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/kafka-image:latest .
+          docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/fake-data-producer-kafka	:latest .
 
       - name: Push Docker Image to Artifact Registry
         run: |
-          docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/kafka-image:latest
+          docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/fake-data-producer-kafka	:latest
 
       - name: Deploy to GKE
         working-directory: ./kafka
