@@ -31,11 +31,11 @@ jobs:
       - name: Build Docker Image
         working-directory: ./kafka/producer
         run: |
-          docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/fake-data-producer-kafka	:latest .
+          docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/fake-data-producer-kafka:latest .
 
       - name: Push Docker Image to Artifact Registry
         run: |
-          docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/fake-data-producer-kafka	:latest
+          docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/fake-data-producer-kafka:latest
 
       - name: Deploy to GKE
         working-directory: ./kafka

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: producer
-          image: gcr.io/music-streaming-service-442319/kafka-producer:latest
+          image: gcr.io/music-streaming-service-442319/fake-data-producer-kafka:latest
           env:
             - name: KAFKA_BROKER
               value: "kafka:9092"
