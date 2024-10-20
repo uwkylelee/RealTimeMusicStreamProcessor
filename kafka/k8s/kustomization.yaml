@@ -1,0 +1,4 @@
+resources:
+  - kafka-deployment.yaml
+  - producer-deployment.yaml
+  - zookeeper-deployment.yaml
