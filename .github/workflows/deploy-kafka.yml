@@ -2,6 +2,13 @@ name: Deploy Kafka to GCP
 
 on:
   workflow_dispatch: # Only allow manual triggers
+  push:
+      branches:
+      - main
+
+env:
+  IMAGE: fake-data-producer-kafka
+  DEPLOYMENT_NAME: gke-kafka-producer
 
 jobs:
   #  lint:
@@ -9,7 +16,7 @@ jobs:
 
   build-and-deploy:
     runs-on: ubuntu-latest
-#    needs: lint
+    #    needs: lint
 
     steps:
       - name: Checkout Code
@@ -37,17 +44,36 @@ jobs:
         run: |
           docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/fake-data-producer-kafka:latest
 
+      - name: Set up Kustomize
+        run: |-
+          curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+          chmod u+x ./kustomize
+
       - name: Install gke-gcloud-auth-plugin
         run: |
           sudo apt-get update
+          sudo apt-get install apt-transport-https ca-certificates gnupg
           sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
 
       - name: Deploy to GKE
-        working-directory: ./kafka
+        working-directory: ./k8s
         env:
           KUBECONFIG: /tmp/kubeconfig
         run: |
-          gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.REGION }}
-          kubectl apply -f k8s/zookeeper-deployment.yaml
-          kubectl apply -f k8s/kafka-deployment.yaml
-          kubectl apply -f k8s/producer-deployment.yaml
+          ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/${{ secrets.GCP_PROJECT_ID }}/$IMAGE:latest
+          ./kustomize build . | kubectl apply -f -
+          kubectl rollout status deployment/zookeeper
+          kubectl rollout status deployment/kafka
+          kubectl rollout status deployment/producer
+          kubectl get services -o wide
+          
+
+#      - name: Deploy to GKE
+#        working-directory: ./kafka
+#        env:
+#          KUBECONFIG: /tmp/kubeconfig
+#        run: |
+#          gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.REGION }}
+#          kubectl apply -f k8s/zookeeper-deployment.yaml
+#          kubectl apply -f k8s/kafka-deployment.yaml
+#          kubectl apply -f k8s/producer-deployment.yaml
