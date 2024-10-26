@@ -32,6 +32,13 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+          location: ${{ secrets.REGION }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
       - name: Authenticate Docker with Artifact Registry
         run: gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
 
@@ -45,35 +52,19 @@ jobs:
           docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}/fake-data-producer-kafka:latest
 
       - name: Set up Kustomize
+        working-directory: ./kafka/k8s
         run: |-
           curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
-          chmod u+x ./kafka/kustomize
-
-#      - name: Install gke-gcloud-auth-plugin
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install apt-transport-https ca-certificates gnupg
-#          sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
+          chmod u+x ./kustomize
 
       - name: Deploy to GKE
-        working-directory: ./kafka
+        working-directory: ./kafka/k8s
         env:
           KUBECONFIG: /tmp/kubeconfig
         run: |
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/${{ secrets.GCP_PROJECT_ID }}/$IMAGE:latest
-          ./kustomize build k8s/ | kubectl apply -f -
+          ./kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/zookeeper
           kubectl rollout status deployment/kafka
           kubectl rollout status deployment/producer
           kubectl get services -o wide
-          
-
-#      - name: Deploy to GKE
-#        working-directory: ./kafka
-#        env:
-#          KUBECONFIG: /tmp/kubeconfig
-#        run: |
-#          gcloud container clusters get-credentials ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.REGION }}
-#          kubectl apply -f k8s/zookeeper-deployment.yaml
-#          kubectl apply -f k8s/kafka-deployment.yaml
-#          kubectl apply -f k8s/producer-deployment.yaml
