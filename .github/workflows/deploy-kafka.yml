@@ -59,8 +59,6 @@ jobs:
 
       - name: Deploy to GKE
         working-directory: ./kafka/k8s
-        env:
-          KUBECONFIG: /tmp/kubeconfig
         run: |
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/${{ secrets.GCP_PROJECT_ID }}/$IMAGE:latest
           ./kustomize build . | kubectl apply -f -

@@ -29,24 +29,24 @@ spec:
           command:
             - "kafka-server-start"
             - "/kafka/config/server.properties"
-          livenessProbe:
-            exec:
-              command:
-                - "kafka-topics"
-                - "--bootstrap-server"
-                - "localhost:9092"
-                - "--list"
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
-          readinessProbe:
-            exec:
-              command:
-                - "kafka-topics"
-                - "--bootstrap-server"
-                - "localhost:9092"
-                - "--list"
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
+#          livenessProbe:
+#            exec:
+#              command:
+#                - "kafka-topics"
+#                - "--bootstrap-server"
+#                - "localhost:9092"
+#                - "--list"
+#            initialDelaySeconds: 10
+#            timeoutSeconds: 5
+#          readinessProbe:
+#            exec:
+#              command:
+#                - "kafka-topics"
+#                - "--bootstrap-server"
+#                - "localhost:9092"
+#                - "--list"
+#            initialDelaySeconds: 10
+#            timeoutSeconds: 5
       volumes:
         - name: kafka-config
           configMap:
