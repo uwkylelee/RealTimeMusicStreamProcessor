@@ -67,11 +67,6 @@ audio features. Link to the dataset is provided below.
 https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset
 )
 
-### Data Processing
-
-Data processing is handled by Apache Spark, which consumes data from Kafka topics, processes it, and prepares it for the
-recommendation system. Spark's structured streaming capabilities enable efficient handling of real-time data streams.
-
 ## Development Requirements
 
 ### Local Development
