@@ -5,14 +5,14 @@
 #### 🖥️ Languages
 <div style="display: flex; gap: 10px; align-items: center;">
   <img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white" height="20">
-  <img src="https://img.shields.io/badge/SQL-4479A1?style=flat&logo=postgresql&logoColor=white" height="20">
+  <img src="https://img.shields.io/badge/SQL-4169E1?style=flat&logo=postgresql&logoColor=white" height="20">
 </div>
 
 #### 🛠️ Frameworks & Libraries
 <div style="display: flex; gap: 10px; align-items: center;">
   <img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=flat&logo=apachekafka&logoColor=white" height="20">
   <img src="https://img.shields.io/badge/PySpark-E25A1C?style=flat&logo=apachespark&logoColor=white" height="20">
-  <img src="https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white" height="20">
+  <img src="https://img.shields.io/badge/BigQuery-669DF6?style=flat&logo=googlebigquery&logoColor=white" height="20">
   <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white" height="20">
   <img src="https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=kubernetes&logoColor=white" height="20">
 </div>
@@ -46,7 +46,7 @@ The system leverages **Apache Kafka** for real-time data ingestion and streaming
 high-throughput data pipelines. For processing this data, **PySpark** provides a robust distributed
 computing framework. The data is processed in real-time using Spark's structured streaming capabilities, which
 facilitates the generation of music recommendations based on user preferences and streaming history. The processed data
-is stored in a **PostgreSQL** database, which serves as the data warehouse for the streaming data.
+is stored in a **BigQuery**, which serves as the data warehouse for the streaming data.
 
 The project is deployed to **Google Cloud Platform (GCP)** through **Google Kubernetes Engine (GKE)**. The deployment
 process involves containerizing the components using **Docker** and deploying them to GKE using **Kubernetes**. The
