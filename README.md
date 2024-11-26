@@ -38,8 +38,8 @@
 
 ## Introduction
 
-This repository serves as a comprehensive practice environment for large-scale data processing and building a
-recommendation system using simulated music streaming data. The data is synthetically generated using the `Faker`
+This repository serves as a comprehensive practice environment for large-scale data processing system 
+using simulated music streaming data. The data is synthetically generated using the `Faker`
 library in Python, which mimics realistic user interactions and streaming behaviors.
 
 The system leverages **Apache Kafka** for real-time data ingestion and streaming, ensuring efficient handling of
